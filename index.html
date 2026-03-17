@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Live Countdown</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  :root {
+    --primary-color: #bb00ff;  /* Enderman purple */
+    --secondary-color: #ffc0cb; /* Pig pink */
+    --bg-color: #1e1e3e;        /* Dark Enderman purple background */
+    --text-color: #ffffff;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(187,0,255,0.6);
+  }
+
+  #description {
+    max-width: 500px;
+    text-align: center;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+    line-height: 1.5;
+  }
+
+  #countdown {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .time-box {
+    background: #2a2a4a;
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 18px 10px;
+    flex: 1 1 80px;
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 1.5em;
+    box-shadow: 0 0 10px rgba(187,0,255,0.3);
+    position: relative;
+  }
+
+  .label {
+    font-size: 0.55em;
+    margin-top: 5px;
+    color: var(--secondary-color);
+  }
+
+  #fun-message {
+    font-size: 0.85em;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    min-height: 30px;
+    text-align: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .fun-flash {
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+
+  .btn {
+    background-color: var(--primary-color);
+    color: #000;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 0.8em;
+    border-radius: 8px;
+    margin: 5px;
+    display: inline-block;
+    transition: 0.3s;
+  }
+
+  .btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+
+  #calendar-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  /* Mobile friendly */
+  @media (max-width: 480px) {
+    h1 { font-size: 1.5em; }
+    #description { font-size: 0.85em; }
+    .time-box { font-size: 1.2em; padding: 12px 5px; }
+    .btn { font-size: 0.75em; padding: 8px 15px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Minecraft Live 2026</h1>
+
+<div id="description">
+  Join the biggest Minecraft event of the year!<br>
+  <strong>March 21, 2026 at 1:00 PM ET</strong> – watch updates, announcements, and exciting reveals from Mojang Studios.
+</div>
+
+<div id="countdown">
+  <div class="time-box"><span id="days">0</span><div class="label">Days</div></div>
+  <div class="time-box"><span id="hours">0</span><div class="label">Hours</div></div>
+  <div class="time-box"><span id="minutes">0</span><div class="label">Minutes</div></div>
+  <div class="time-box"><span id="seconds">0</span><div class="label">Seconds</div></div>
+</div>
+
+<div id="fun-message"></div>
+
+<a href="https://www.youtube.com/watch?v=Is5IswM87EQ" target="_blank" class="btn">Watch Live Stream</a>
+
+<div id="calendar-buttons">
+  <a href="#" class="btn" id="add-google">Google Calendar</a>
+  <a href="#" class="btn" id="add-outlook">Outlook</a>
+  <a href="#" class="btn" id="add-ical">Apple Calendar</a>
+</div>
+
+<script>
+const eventDate = new Date("March 21, 2026 13:00:00 GMT-0400");
+const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minutesEl = document.getElementById("minutes");
+const secondsEl = document.getElementById("seconds");
+const funMessage = document.getElementById("fun-message");
+
+// Minecraft facts for fun messages
+const messages = [
+  "You can craft Name Tags to rename mobs.",
+  "Pigs drop porkchops when defeated.",
+  "Endermen can pick up and move blocks.",
+  "Creepers explode when near the player.",
+  "You can dye sheep any color in Minecraft.",
+  "Redstone can power machines and traps.",
+  "Mooshrooms are special mushroom cows.",
+  "Villagers have unique professions and trades.",
+  "You can tame wolves to become loyal pets.",
+  "Ocelots can be tamed into cats.",
+  "The Nether is a dangerous hell-like dimension.",
+  "Ghasts float and shoot fireballs in the Nether.",
+  "You can craft a brewing stand to make potions.",
+  "Potion effects include healing, strength, and invisibility.",
+  "Diamonds are used to craft powerful tools.",
+  "Obsidian is created when water touches lava.",
+  "You can mine obsidian with a diamond pickaxe.",
+  "Creepers were originally a coding mistake with pigs.",
+  "The End dimension is home to the Ender Dragon.",
+  "Ender Crystals heal the Ender Dragon.",
+  "Chorus plants grow naturally in the End.",
+  "Elytra wings allow players to glide.",
+  "Shulker boxes store items and keep them after breaking.",
+  "Ice blocks can slide entities across surfaces.",
+  "Snow golems throw snowballs to attack mobs.",
+  "Iron golems protect villages from hostile mobs.",
+  "You can ride pigs with a saddle.",
+  "Boats are faster on ice than water.",
+  "You can enchant items with an enchanting table.",
+  "Experience points are gained from mining, fighting, and breeding.",
+  "The Far Lands were a bug in older versions.",
+  "Horses can be tamed and ridden.",
+  "You can dye leather armor any color.",
+  "Axolotls are aquatic mobs that can help in combat.",
+  "Bees pollinate flowers and make honey.",
+  "Campfires can cook food without fuel.",
+  "Sweet berries grow naturally in taiga biomes.",
+  "Rabbits drop rabbit hides and meat.",
+  "Tridents can be thrown and return with the loyalty enchantment.",
+  "The Wither is a boss mob that shoots explosive skulls.",
+  "The Nether has biomes, just like the Overworld.",
+  "Magma cubes split into smaller cubes when killed.",
+  "Zombies can break doors in hard mode.",
+  "Villagers have gossip and reputation mechanics.",
+  "Witches can throw potions that harm or poison players.",
+  "Phantoms spawn when players haven’t slept for days.",
+  "Copper blocks oxidize over time.",
+  "Lightning can turn pigs into zombie pigmen.",
+  "You can ride striders in the Nether with a saddle.",
+  "Firework rockets can boost Elytra flight.",
+  "Glow squid drop glow ink sacs for glowing text.",
+  "Axes deal more damage than swords in some versions.",
+  "Snow layers can be stacked to create different heights.",
+  "TNT can be ignited with flint and steel or redstone.",
+  "Bats spawn in dark areas, but drop nothing.",
+  "Lanterns are brighter than torches and can hang from blocks.",
+  "Coral can only survive underwater with sufficient light.",
+  "Some mushrooms can grow giant versions on dirt or mycelium.",
+  "The world seed determines the terrain generation.",
+  "Music discs can be played in a jukebox."
+];
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = eventDate - now;
+
+  if(diff <= 0){
+    document.getElementById('countdown').innerHTML = "🎉 Minecraft Live is LIVE! 🎉";
+    funMessage.textContent = "Join the stream now!";
+    clearInterval(timerInterval);
+    return;
+  }
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  daysEl.textContent = days;
+  hoursEl.textContent = hours;
+  minutesEl.textContent = minutes;
+  secondsEl.textContent = seconds;
+
+  // Update fun message exactly at 30s and 0s
+  if(seconds === 30 || seconds === 0){
+    funMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+    funMessage.classList.add('fun-flash');
+    setTimeout(() => funMessage.classList.remove('fun-flash'), 200); // flash effect
+  }
+}
+
+const timerInterval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Calendar links
+const googleLink = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Minecraft+Live+2026&dates=20260321T130000/20260321T150000&details=Join+Minecraft+Live+2026+stream&location=https://www.youtube.com/watch?v=Is5IswM87EQ";
+document.getElementById("add-google").href = googleLink;
+
+const outlookLink = "https://outlook.office.com/calendar/0/deeplink/compose?subject=Minecraft+Live+2026&startdt=2026-03-21T13:00:00&enddt=2026-03-21T15:00:00&body=Join+Minecraft+Live+2026+stream+here:+https://www.youtube.com/watch?v=Is5IswM87EQ";
+document.getElementById("add-outlook").href = outlookLink;
+
+const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Minecraft Live 2026
+DTSTART:20260321T130000
+DTEND:20260321T150000
+DESCRIPTION:Join Minecraft Live 2026 stream here: https://www.youtube.com/watch?v=Is5IswM87EQ
+END:VEVENT
+END:VCALENDAR`;
+
+document.getElementById("add-ical").href = "data:text/calendar;charset=utf8," + encodeURIComponent(icsContent);
+document.getElementById("add-ical").setAttribute("download","Minecraft_Live_2026.ics");
+</script>
+
+</body>
+</html>
